@@ -7,33 +7,46 @@ import {
   Dimensions,
   TouchableHighlight
 } from 'react-native';
-
+import { upWaffle } from './apiHandler.js';
 
 var deviceWidth = Dimensions.get('window').width;
 
 export default class WaffleCard extends Component {
   data;
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      lastPress: new Date().getTime() - 300,
+    };
+  }
   upVote(d) {
+    /*delta = new Date().getTime()  - this.state.lastPress;
+    if(delta < 200)*/
     alert(data._id);
+    upWaffle(data._id);
+
+    /*this.setState({
+      lastPress: new Date().getTime()
+    });*/
   }
   render() {
     data = this.props.data;
-    console.log(data);
-    let img = require("./waffle3.jpg");
     return (
       <View style={styles.waffleContainer}>
         <TouchableHighlight onPress={this.upVote}>
-        <View>
-          <Image
-            source={{uri: data.url}}
-            style={styles.image}
-            resizeMode='cover'
-            />
-          <Text style={styles.upwaffles}>Upwaffles: {this.props.data.upwaffels}</Text>
-          <Text>konsistens: {data.consistency}</Text>
-          <Text>Rating: {data.rating}</Text>
+          <View>
+            <Image
+              source={{uri: data.url}}
+              style={styles.image}
+              resizeMode='cover'
+              />
+            <Text style={styles.upwaffles}>Upwaffles: {this.props.data.upwaffels}</Text>
+            <Text>konsistens: {data.consistency}</Text>
+            <Text>Rating: {data.rating}</Text>
+            <Text>Kommentarer: {data.comment}</Text>
           </View>
-          </TouchableHighlight>
+        </TouchableHighlight>
       </View>
     )
   }

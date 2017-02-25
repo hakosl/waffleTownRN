@@ -8,6 +8,10 @@ import {
 } from 'react-native';
 import WaffleCard from "./WaffleCard.js";
 import Footer from './Footer.js';
+import NewWaffle from './newWaffle.js';
+import CameraScreen from './cameraScreen.js';
+
+import {getWaffles} from './apiHandler.js';
 
 const MOCK_DATA = [ { _id: "58b0b81137e5a80b115ff364",
     rating: 1,
@@ -39,10 +43,12 @@ export default class Waffle extends Component {
   constructor(props) {
     super(props);
     let idEquals = (r1, r2) => r1.id !== r2.id
-    const dataSource = new ListView.DataSource({rowHasChanged: idEquals});
+    let dataSource = new ListView.DataSource({rowHasChanged: idEquals});
     this.state = {
-      dataSource: dataSource.cloneWithRows(MOCK_DATA)
+      dataSource: dataSource.cloneWithRows(MOCK_DATA),
+      loading: true,
     }
+    getWaffles(this, dataSource);
   }
 
   renderRow(data) {
@@ -65,6 +71,8 @@ export default class Waffle extends Component {
     );
   }
   render() {
+    return <NewWaffle />;
+    if(!this.state.loading) {
     return (
       <View style={styles.container}>
       <ListView
@@ -75,6 +83,9 @@ export default class Waffle extends Component {
       <Footer />
       </View>
     );
+  } else {
+    return (<Text>LOADING</Text>);
+  }
   }
 }
 

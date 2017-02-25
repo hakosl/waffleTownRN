@@ -9,13 +9,18 @@ import {
 } from 'react-native';
 
 export default class WaffleFooter extends Component {
+  newWaffle() {
+    //open new waffle screen here
+  }
   render() {
     return (
-    <TouchableHighlight>
-      <View style={styles.newWaffle}>
-        <Text>Post en ny Waffle</Text>
+    <View style={styles.newWaffle}>
+    <TouchableHighlight onPress={this.newWaffle}>
+      <View >
+        <Text style={styles.textStyle}>Post en ny Waffle</Text>
       </View>
     </TouchableHighlight>
+    </View>
     );
   }
 }
@@ -23,6 +28,11 @@ export default class WaffleFooter extends Component {
 
 const styles = StyleSheet.create({
   newWaffle: {
-    height: 50
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  textStyle: {
+    fontSize: 20
   }
 });
