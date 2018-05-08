@@ -29,7 +29,10 @@ export default class CameraScreen extends Component {
 
   takePicture() {
     this.camera.capture()
-      .then((data) => console.log(data))
+      .then((data) => {
+        return data.data;
+      })
+      .then((data) => this.props.setImage(data))
       .catch(err => console.error(err));
   }
 }

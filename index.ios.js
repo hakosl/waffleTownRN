@@ -12,7 +12,8 @@ import {
   View,
   Image
 } from 'react-native';
-
+global.___DEV___ = false;
+console.ignoredYellowBox = ['Warning: ReactNative.createElement'];
 import Waffle from './Waffle.js';
 
 

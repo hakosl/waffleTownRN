@@ -15,7 +15,7 @@ export default class WaffleFooter extends Component {
   render() {
     return (
     <View style={styles.newWaffle}>
-    <TouchableHighlight onPress={this.newWaffle}>
+    <TouchableHighlight onPress={e => this.props.handler(e, 'newWaffle')}>
       <View >
         <Text style={styles.textStyle}>Post en ny Waffle</Text>
       </View>

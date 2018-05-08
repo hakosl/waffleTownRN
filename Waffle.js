@@ -12,31 +12,8 @@ import NewWaffle from './newWaffle.js';
 import CameraScreen from './cameraScreen.js';
 
 import {getWaffles} from './apiHandler.js';
+import {getAllScenes, getCurScene, sceneShouldChange, setScene} from './sceneHandler.js';
 
-const MOCK_DATA = [ { _id: "58b0b81137e5a80b115ff364",
-    rating: 1,
-    url: "https://activerain-store.s3.amazonaws.com/image_store/uploads/agents/rgreenberg/files/Waffles2.jpg",
-    comment: 'Jævlig bra waffel',
-    palegg: [ 'Syltetoy', 'Romme' ],
-    consistency: 2,
-    upwaffels: 110,
-    date: "2017-02-24T22:47:45.183Z" },
-  { _id: "58b0ba892b23350f50366987",
-    url: "https://activerain-store.s3.amazonaws.com/image_store/uploads/agents/rgreenberg/files/Waffles2.jpg",
-    rating: 1,
-    comment: 'Jævlig bra waffel',
-    palegg: [ 'Syltetoy', 'Romme' ],
-    consistency: 2,
-    upwaffels: 15,
-    date: "2017-02-24T22:58:17.871Z"},
-  { _id: "58b0ba9331584a0f612a2092",
-    url: "https://activerain-store.s3.amazonaws.com/image_store/uploads/agents/rgreenberg/files/Waffles2.jpg",
-    rating: 1,
-    comment: 'Jævlig bra waffel',
-    palegg: [ 'Syltetoy', 'Romme' ],
-    consistency: 2,
-    upwaffels: 23,
-    date: "2017-02-24T22:58:27.270Z" } ];
 
 
 export default class Waffle extends Component {
@@ -45,10 +22,32 @@ export default class Waffle extends Component {
     let idEquals = (r1, r2) => r1.id !== r2.id
     let dataSource = new ListView.DataSource({rowHasChanged: idEquals});
     this.state = {
-      dataSource: dataSource.cloneWithRows(MOCK_DATA),
-      loading: true,
+      dataSource: dataSource.cloneWithRows([]),
+      curScene: 'loading',
+      imageTaken: false,
+      image: "",
+      updateView: 1
     }
+
+    this.setImage = this.setImage.bind(this);
+    this.changeScene = this.changeScene.bind(this)
     getWaffles(this, dataSource);
+  }
+
+  setImage(img) {
+    setScene('newWaffle');
+    this.setState({
+      image: img
+    })
+  }
+
+  changeScene(e, scene) {
+    if(e !== null)
+      e.preventDefault()
+    setScene(scene);
+    this.setState({
+      updateView: Math.random(),
+    });
   }
 
   renderRow(data) {
@@ -61,18 +60,31 @@ export default class Waffle extends Component {
   renderHeader(d) {
     return (
       <Text style={styles.header}>
-        Waffle Town
+        Waffle Townwtf
       </Text>
     );
   }
-  renderFooter(d) {
-    return (
-      <Footer data={d} />
-    );
-  }
   render() {
-    return <NewWaffle />;
-    if(!this.state.loading) {
+    let scenes = getAllScenes();
+    let curScene = getCurScene();
+    if(getCurScene() === scenes.waffles) {
+      return (
+        <View style={styles.container}>
+        <ListView
+          renderHeader={this.renderHeader}
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow}
+        />
+        <Footer handler={this.changeScene}/>
+        </View>
+      );
+  } else if (curScene === scenes.newWaffle) {
+    return <NewWaffle image={this.state.image}handler={this.changeScene}/>;
+  } else if (curScene === scenes.takePicture) {
+    return <CameraScreen setImage={this.setImage}handler={this.changeScene}/>;
+  } else if(curScene = scenes.loading){
+    return (<Text>LOADING</Text>);
+  } else {
     return (
       <View style={styles.container}>
       <ListView
@@ -80,11 +92,9 @@ export default class Waffle extends Component {
         dataSource={this.state.dataSource}
         renderRow={this.renderRow}
       />
-      <Footer />
+      <Footer handler={this.changeScene}/>
       </View>
     );
-  } else {
-    return (<Text>LOADING</Text>);
   }
   }
 }

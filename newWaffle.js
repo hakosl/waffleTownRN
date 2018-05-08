@@ -14,6 +14,7 @@ import {
   Button
 } from 'react-native';
 import {postWaffle} from './apiHandler.js';
+import {setScene} from './sceneHandler.js';
 
 var deviceWidth = Dimensions.get('window').width;
 
@@ -22,16 +23,21 @@ export default class NewWaffle extends Component {
     super(props);
     this.lagNyWaffle = () => {
       let state = this.state;
-      console.log(this.state);
-      postWaffle(state.img, state.kommentar, state.konsistens, state.rating);
+      postWaffle(state.postImg, state.kommentar, state.konsistens, state.rating, null, this.updateScene.bind(this));
     }
     let img = require('./img/waffle1.jpeg');
     this.state = {
       img: img,
+      postImg: props.image,
       konsistens: 1,
       rating: 1,
       kommentar: "ikkje bra",
+      update: 0
     }
+  }
+
+  updateScene(x, scene) {
+    this.props.handler(x, scene);
   }
 
   render() {
@@ -39,10 +45,14 @@ export default class NewWaffle extends Component {
       <ScrollView>
       <View style={styles.newWaffleContainer}>
         <Text>NEW WAFFLE!!!!</Text>
-        <Image
-          source={this.state.img}
-          style={styles.img}
-          />
+        <TouchableHighlight
+          onPress={e => this.props.handler(e, 'takePicture')}
+          >
+          <Image
+            source={this.state.img}
+            style={styles.img}
+            />
+        </TouchableHighlight>
         <Text>konsistens:</Text>
         <Picker>
           <Picker.Item
